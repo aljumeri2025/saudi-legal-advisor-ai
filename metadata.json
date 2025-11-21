@@ -1,7 +1,0 @@
-{
-  "name": "Saudi Legal Advisor AI",
-  "description": "A comprehensive Saudi legal advisory platform connecting users with specialized AI assistants for various government entities and a private legal counselor.",
-  "requestFramePermissions": [
-    "microphone"
-  ]
-}
