@@ -13,7 +13,7 @@ import { LiveVoiceInterface } from './components/LiveVoiceInterface';
 import { HistorySidebar } from './components/HistorySidebar';
 import { SuggestionModal } from './components/SuggestionModal';
 import { SuggestionsList } from './components/SuggestionsList';
-import { Gavel, Search, ShieldCheck, Filter, Mic, FileSignature, ArrowLeft, Clock, Menu, PlusCircle, Settings, Globe, ArrowRight, HelpCircle } from 'lucide-react';
+import { Gavel, Search, ShieldCheck, Filter, Mic, FileSignature, ArrowLeft, Clock, Menu, PlusCircle, Settings, Globe, ArrowRight, HelpCircle, Calendar } from 'lucide-react';
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
 import { t } from './i18n/translations';
 
@@ -132,6 +132,10 @@ const AppContent: React.FC = () => {
     setCurrentView('chat');
   };
 
+  const handleBookingClick = () => {
+    alert(t('serviceUnderDev', language));
+  };
+
   const handleSelectFromHistory = (session: SavedSession) => {
     // Need to find entity in current language list by ID
     let entity = [...entities, privateLawyer].find(e => e.id === session.entityId);
@@ -172,7 +176,7 @@ const AppContent: React.FC = () => {
 
     if (showLawyerOptions) {
       return (
-        <div className="max-w-5xl mx-auto animate-fadeIn">
+        <div className="max-w-6xl mx-auto animate-fadeIn">
              <div className="text-center mb-10">
                 <div className="inline-flex items-center gap-2 bg-saudi-gold/10 text-saudi-gold px-4 py-2 rounded-full mb-4 border border-saudi-gold/20">
                   <Gavel size={20} />
@@ -184,11 +188,11 @@ const AppContent: React.FC = () => {
                 </p>
              </div>
 
-             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
                 {/* Option 1: Claim */}
                 <button 
                   onClick={() => selectLawyerTask('claim')}
-                  className={`group relative flex flex-col justify-between h-full bg-white border border-gray-200 rounded-3xl p-8 overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-amber-200 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}
+                  className={`group relative flex flex-col justify-between h-full min-h-[280px] bg-white border border-gray-200 rounded-3xl p-8 overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-amber-200 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}
                 >
                    <div className="absolute inset-0 bg-gradient-to-br from-amber-50/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                    <div className="relative z-10 flex flex-col h-full w-full">
@@ -218,7 +222,7 @@ const AppContent: React.FC = () => {
                 {/* Option 2: Defense */}
                 <button 
                    onClick={() => selectLawyerTask('defense')}
-                   className={`group relative flex flex-col justify-between h-full bg-white border border-gray-200 rounded-3xl p-8 overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-emerald-200 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}
+                   className={`group relative flex flex-col justify-between h-full min-h-[280px] bg-white border border-gray-200 rounded-3xl p-8 overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-emerald-200 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}
                 >
                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
@@ -249,7 +253,7 @@ const AppContent: React.FC = () => {
                 {/* Option 3: Questions and Inquiries */}
                 <button 
                    onClick={() => selectLawyerTask('inquiry')}
-                   className={`group relative flex flex-col justify-between h-full bg-white border border-gray-200 rounded-3xl p-8 overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-blue-200 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}
+                   className={`group relative flex flex-col justify-between h-full min-h-[280px] bg-white border border-gray-200 rounded-3xl p-8 overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-blue-200 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}
                 >
                    <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
@@ -276,6 +280,38 @@ const AppContent: React.FC = () => {
                       </div>
                    </div>
                 </button>
+
+                {/* Option 4: Book Appointment (New) */}
+                <button 
+                   onClick={handleBookingClick}
+                   className={`group relative flex flex-col justify-between h-full min-h-[280px] bg-white border border-gray-200 rounded-3xl p-8 overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-purple-200 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}
+                >
+                   <div className="absolute inset-0 bg-gradient-to-br from-purple-50/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                   <div className="relative z-10 flex flex-col h-full w-full">
+                      <div className="flex items-start justify-between mb-6">
+                          <div className="w-14 h-14 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 group-hover:bg-purple-600 group-hover:text-white transition-all duration-300">
+                              <Calendar size={28} />
+                          </div>
+                          <span className="px-3 py-1 bg-purple-50 text-purple-700 text-xs font-bold rounded-full border border-purple-100">{t('bookAppointmentBadge', language)}</span>
+                      </div>
+
+                      <h3 className="text-2xl font-bold text-gray-800 mb-3 group-hover:text-purple-700 transition-colors">{t('bookAppointmentTitle', language)}</h3>
+                      <p className="text-sm text-gray-500 leading-relaxed mb-8 flex-grow">
+                         {t('bookAppointmentDesc', language)}
+                      </p>
+                      
+                      <div className={`flex items-center ${dir === 'rtl' ? 'justify-end' : 'justify-start'} text-purple-600 font-bold text-sm group-hover:gap-2 transition-all`}>
+                         <span>{t('startBooking', language)}</span>
+                         {dir === 'rtl' ? (
+                            <ArrowLeft size={18} className="mr-2 transition-transform group-hover:-translate-x-1" />
+                         ) : (
+                            <ArrowRight size={18} className="ml-2 transition-transform group-hover:translate-x-1" />
+                         )}
+                      </div>
+                   </div>
+                </button>
+
              </div>
              
              <div className="mt-10 text-center">
@@ -427,10 +463,10 @@ const AppContent: React.FC = () => {
             {/* Private Lawyer (Gold Pill) */}
             <button 
               onClick={startPrivateLawyer}
-              className="hidden md:flex items-center gap-2 bg-[#C8A051] hover:bg-[#B89041] text-white px-6 py-2 rounded-full shadow-md transition-all duration-300 hover:scale-105 active:scale-95"
+              className="flex items-center gap-2 bg-[#C8A051] hover:bg-[#B89041] text-white px-3 py-1.5 text-xs md:px-6 md:py-2 md:text-sm rounded-full shadow-md transition-all duration-300 hover:scale-105 active:scale-95"
             >
-              <span className="font-bold text-sm">{t('privateLawyer', language)}</span>
-              <Gavel size={20} strokeWidth={2.5} className="text-white" />
+              <span className="font-bold whitespace-nowrap">{t('privateLawyer', language)}</span>
+              <Gavel size={16} strokeWidth={2.5} className="text-white md:w-5 md:h-5" />
             </button>
 
             {/* Voice Call (Gray Pill) */}
