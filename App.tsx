@@ -1,7 +1,9 @@
+
 import React, { useState, useMemo, useEffect } from 'react';
 import { 
   CLAIM_INSTRUCTION_AR, CLAIM_INSTRUCTION_EN, 
   DEFENSE_INSTRUCTION_AR, DEFENSE_INSTRUCTION_EN, 
+  INQUIRY_INSTRUCTION_AR, INQUIRY_INSTRUCTION_EN,
   getEntities, getPrivateLawyerEntity 
 } from './constants';
 import { Entity, SavedSession, Message, AppView } from './types';
@@ -11,7 +13,7 @@ import { LiveVoiceInterface } from './components/LiveVoiceInterface';
 import { HistorySidebar } from './components/HistorySidebar';
 import { SuggestionModal } from './components/SuggestionModal';
 import { SuggestionsList } from './components/SuggestionsList';
-import { Gavel, Search, ShieldCheck, Filter, Mic, FileSignature, ArrowLeft, Clock, Menu, PlusCircle, Settings, Globe, ArrowRight } from 'lucide-react';
+import { Gavel, Search, ShieldCheck, Filter, Mic, FileSignature, ArrowLeft, Clock, Menu, PlusCircle, Settings, Globe, ArrowRight, HelpCircle } from 'lucide-react';
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
 import { t } from './i18n/translations';
 
@@ -81,28 +83,46 @@ const AppContent: React.FC = () => {
     setCurrentView('home');
   };
 
-  const selectLawyerTask = (task: 'claim' | 'defense') => {
+  const selectLawyerTask = (task: 'claim' | 'defense' | 'inquiry') => {
     const isClaim = task === 'claim';
+    const isDefense = task === 'defense';
+    const isInquiry = task === 'inquiry';
     const isAr = language === 'ar';
+    
+    let name = '';
+    let icon = Gavel;
+    let systemInstruction = '';
+    let welcome = '';
+
+    if (isClaim) {
+        name = isAr ? 'المحامي - صياغة الدعوى' : 'Lawyer - Statement of Claim';
+        icon = FileSignature;
+        systemInstruction = isAr ? CLAIM_INSTRUCTION_AR : CLAIM_INSTRUCTION_EN;
+        welcome = isAr 
+            ? "أهلاً بك. بصفتي محاميك الخاص، سأقوم بكتابة **لائحة الدعوى** لك. لضمان صياغة قانونية رصينة، سأطرح عليك بعض الأسئلة لجمع التفاصيل. هل أنت جاهز؟ لنبدأ بذكر صفة المدعي والمدعى عليه."
+            : "Welcome. As your private lawyer, I will draft a **Statement of Claim** for you. To ensure a solid legal draft, I will ask you some questions to gather details. Are you ready? Let's start with the Plaintiff and Defendant roles.";
+    } else if (isDefense) {
+        name = isAr ? 'المحامي - الدفاع والرد' : 'Lawyer - Defense Memo';
+        icon = ShieldCheck;
+        systemInstruction = isAr ? DEFENSE_INSTRUCTION_AR : DEFENSE_INSTRUCTION_EN;
+        welcome = isAr
+            ? "أهلاً بك. بصفتي محاميك الخاص، سأقوم بصياغة **مذكرة الرد (الدفاع)**. يرجى تزويدي بلائحة الدعوى المقامة ضدك (كنص أو ملف) أو شرح ملخص لها."
+            : "Welcome. As your private lawyer, I will draft a **Defense Memo**. Please provide the claim statement filed against you (text or file) or a summary of it.";
+    } else if (isInquiry) {
+        name = isAr ? 'المحامي - استشارات' : 'Lawyer - Consultation';
+        icon = HelpCircle;
+        systemInstruction = isAr ? INQUIRY_INSTRUCTION_AR : INQUIRY_INSTRUCTION_EN;
+        welcome = isAr
+            ? "أهلاً بك. أنا محاميك الخاص. تفضل بطرح سؤالك أو استفسارك القانوني، وسأقوم بالإجابة عليه وفقاً للأنظمة السعودية."
+            : "Welcome. I am your private lawyer. Please feel free to ask your legal question or inquiry, and I will answer it according to Saudi regulations.";
+    }
     
     const entity: Entity = {
         ...privateLawyer,
-        name: isClaim 
-          ? (isAr ? 'المحامي - صياغة الدعوى' : 'Lawyer - Statement of Claim') 
-          : (isAr ? 'المحامي - الدفاع والرد' : 'Lawyer - Defense Memo'),
-        icon: isClaim ? FileSignature : ShieldCheck,
-        systemInstruction: isClaim 
-          ? (isAr ? CLAIM_INSTRUCTION_AR : CLAIM_INSTRUCTION_EN)
-          : (isAr ? DEFENSE_INSTRUCTION_AR : DEFENSE_INSTRUCTION_EN)
+        name,
+        icon,
+        systemInstruction
     };
-    
-    const welcome = isClaim 
-        ? (isAr 
-            ? "أهلاً بك. بصفتي محاميك الخاص، سأقوم بكتابة **لائحة الدعوى** لك. لضمان صياغة قانونية رصينة، سأطرح عليك بعض الأسئلة لجمع التفاصيل. هل أنت جاهز؟ لنبدأ بذكر صفة المدعي والمدعى عليه."
-            : "Welcome. As your private lawyer, I will draft a **Statement of Claim** for you. To ensure a solid legal draft, I will ask you some questions to gather details. Are you ready? Let's start with the Plaintiff and Defendant roles.")
-        : (isAr
-            ? "أهلاً بك. بصفتي محاميك الخاص، سأقوم بصياغة **مذكرة الرد (الدفاع)**. يرجى تزويدي بلائحة الدعوى المقامة ضدك (كنص أو ملف) أو شرح ملخص لها."
-            : "Welcome. As your private lawyer, I will draft a **Defense Memo**. Please provide the claim statement filed against you (text or file) or a summary of it.");
 
     setLawyerInitialMessage(welcome);
     setSelectedEntity(entity);
@@ -152,7 +172,7 @@ const AppContent: React.FC = () => {
 
     if (showLawyerOptions) {
       return (
-        <div className="max-w-4xl mx-auto animate-fadeIn">
+        <div className="max-w-5xl mx-auto animate-fadeIn">
              <div className="text-center mb-10">
                 <div className="inline-flex items-center gap-2 bg-saudi-gold/10 text-saudi-gold px-4 py-2 rounded-full mb-4 border border-saudi-gold/20">
                   <Gavel size={20} />
@@ -164,7 +184,7 @@ const AppContent: React.FC = () => {
                 </p>
              </div>
 
-             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
                 {/* Option 1: Claim */}
                 <button 
                   onClick={() => selectLawyerTask('claim')}
@@ -217,6 +237,37 @@ const AppContent: React.FC = () => {
                       
                       <div className={`flex items-center ${dir === 'rtl' ? 'justify-end' : 'justify-start'} text-emerald-600 font-bold text-sm group-hover:gap-2 transition-all`}>
                          <span>{t('startDefense', language)}</span>
+                         {dir === 'rtl' ? (
+                            <ArrowLeft size={18} className="mr-2 transition-transform group-hover:-translate-x-1" />
+                         ) : (
+                            <ArrowRight size={18} className="ml-2 transition-transform group-hover:translate-x-1" />
+                         )}
+                      </div>
+                   </div>
+                </button>
+
+                {/* Option 3: Questions and Inquiries */}
+                <button 
+                   onClick={() => selectLawyerTask('inquiry')}
+                   className={`group relative flex flex-col justify-between h-full bg-white border border-gray-200 rounded-3xl p-8 overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-blue-200 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}
+                >
+                   <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                   <div className="relative z-10 flex flex-col h-full w-full">
+                      <div className="flex items-start justify-between mb-6">
+                          <div className="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
+                              <HelpCircle size={28} />
+                          </div>
+                          <span className="px-3 py-1 bg-blue-50 text-blue-700 text-xs font-bold rounded-full border border-blue-100">{t('inquiryBadge', language)}</span>
+                      </div>
+
+                      <h3 className="text-2xl font-bold text-gray-800 mb-3 group-hover:text-blue-700 transition-colors">{t('inquiryTitle', language)}</h3>
+                      <p className="text-sm text-gray-500 leading-relaxed mb-8 flex-grow">
+                         {t('inquiryDesc', language)}
+                      </p>
+                      
+                      <div className={`flex items-center ${dir === 'rtl' ? 'justify-end' : 'justify-start'} text-blue-600 font-bold text-sm group-hover:gap-2 transition-all`}>
+                         <span>{t('startInquiry', language)}</span>
                          {dir === 'rtl' ? (
                             <ArrowLeft size={18} className="mr-2 transition-transform group-hover:-translate-x-1" />
                          ) : (

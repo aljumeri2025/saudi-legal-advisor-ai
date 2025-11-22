@@ -1,3 +1,4 @@
+
 import { LucideIcon } from 'lucide-react';
 
 export type Language = 'ar' | 'en';
@@ -10,6 +11,7 @@ export interface Entity {
   icon: LucideIcon;
   systemInstruction: string;
   colorClass: string;
+  website?: string;
 }
 
 export interface Attachment {

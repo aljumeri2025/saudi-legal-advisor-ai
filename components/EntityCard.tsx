@@ -1,6 +1,7 @@
+
 import React from 'react';
 import { Entity } from '../types';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { t } from '../i18n/translations';
 
@@ -12,6 +13,14 @@ interface EntityCardProps {
 export const EntityCard: React.FC<EntityCardProps> = ({ entity, onClick }) => {
   const { language, dir } = useLanguage();
   const Icon = entity.icon;
+
+  const getDomain = (url: string) => {
+    try {
+      return new URL(url).hostname.replace('www.', '');
+    } catch {
+      return url;
+    }
+  };
 
   return (
     <button
@@ -31,9 +40,23 @@ export const EntityCard: React.FC<EntityCardProps> = ({ entity, onClick }) => {
         {entity.name}
       </h3>
       
-      <p className="text-xs text-gray-500 leading-relaxed mb-6 flex-grow line-clamp-3">
+      <p className="text-xs text-gray-500 leading-relaxed mb-2 line-clamp-3">
         {entity.description}
       </p>
+
+      {entity.website && (
+        <a 
+          href={entity.website}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={(e) => e.stopPropagation()}
+          className="inline-flex items-center gap-1.5 text-[10px] text-gray-400 hover:text-saudi-gold transition-colors mb-4 bg-gray-50 px-2 py-1 rounded hover:bg-gray-100"
+          title={language === 'ar' ? 'زيارة الموقع الرسمي' : 'Visit official website'}
+        >
+          <ExternalLink size={10} />
+          <span dir="ltr" className="font-mono tracking-tight">{getDomain(entity.website)}</span>
+        </a>
+      )}
       
       <div className="w-full flex items-center justify-between text-saudi-green font-medium text-xs mt-auto pt-4 border-t border-gray-50 group-hover:border-saudi-green/10 transition-colors">
         <span>{t('startConversation', language)}</span>

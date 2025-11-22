@@ -1,3 +1,4 @@
+
 import { Language } from '../types';
 
 export const translations = {
@@ -30,6 +31,10 @@ export const translations = {
     defenseDesc: "إعداد مذكرة رد جوابية للدفاع عن حقوقك، وتفنيد ادعاءات الخصم بالدفوع الشكلية والموضوعية.",
     defenseBadge: "للمدعى عليه",
     startDefense: "بدء الدفاع",
+    inquiryTitle: "أسئلة واستفسارات",
+    inquiryDesc: "اطرح أي سؤال قانوني أو استفسار عام للحصول على إجابة دقيقة وموثوقة وفق الأنظمة السعودية.",
+    inquiryBadge: "استشارة عامة",
+    startInquiry: "طرح سؤال",
     backToHome: "العودة للقائمة الرئيسية",
     browseBySector: "تصفح حسب القطاع:",
     chatPlaceholder: "اكتب رسالتك هنا...",
@@ -95,6 +100,10 @@ export const translations = {
     defenseDesc: "Preparing a defense memo to defend your rights and refute the opponent's claims with formal and substantive defenses.",
     defenseBadge: "Defendant",
     startDefense: "Start Defense",
+    inquiryTitle: "Questions & Inquiries",
+    inquiryDesc: "Ask any legal question or general inquiry to get an accurate and reliable answer according to Saudi regulations.",
+    inquiryBadge: "General Consultation",
+    startInquiry: "Ask Question",
     backToHome: "Back to Main Menu",
     browseBySector: "Browse by Sector:",
     chatPlaceholder: "Type your message here...",
