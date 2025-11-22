@@ -1,11 +1,14 @@
-import { GoogleGenAI, Part, GenerateContentResponse } from "@google/genai";
+import { GoogleGenAI, Part, GenerateContentResponse } from '@google/genai';
 import { Message, Attachment } from '../types';
 
 // Ensure API key is available
-const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY || import.meta.env.API_KEY;
 
 if (!apiKey) {
-  console.error("API_KEY is missing from environment variables.");
+  console.error('API_KEY is missing from environment variables.');
+} else {
+  const maskedKey = `${apiKey.slice(0, 4)}...${apiKey.slice(-4)}`;
+  console.debug('Gemini API key detected:', maskedKey);
 }
 
 const ai = new GoogleGenAI({ apiKey: apiKey || '' });
@@ -26,20 +29,20 @@ export const sendMessageToGeminiStream = async (
       },
       history: history.map(msg => {
         const parts: Part[] = [];
-        
+
         // Add text part if exists
         if (msg.text) {
           parts.push({ text: msg.text });
         }
-        
+
         // Add attachment parts if exist
         if (msg.attachments && msg.attachments.length > 0) {
           msg.attachments.forEach(att => {
             parts.push({
               inlineData: {
                 mimeType: att.mimeType,
-                data: att.data
-              }
+                data: att.data,
+              },
             });
           });
         }
@@ -56,25 +59,24 @@ export const sendMessageToGeminiStream = async (
     if (newMessage) {
       currentParts.push({ text: newMessage });
     }
-    
+
     attachments.forEach(att => {
       currentParts.push({
         inlineData: {
           mimeType: att.mimeType,
-          data: att.data
-        }
+          data: att.data,
+        },
       });
     });
 
     // Send message with parts using stream
     const response = await chat.sendMessageStream({
-      message: currentParts
+      message: currentParts,
     });
 
     return response;
-
   } catch (error) {
-    console.error("Error calling Gemini:", error);
+    console.error('Error calling Gemini:', error);
     throw error;
   }
 };
