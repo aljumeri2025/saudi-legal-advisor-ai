@@ -3,11 +3,12 @@ import { Message, Attachment } from '../types';
 
 // Ensure API key is available
 const apiKey = process.env.API_KEY;
+
 if (!apiKey) {
   console.error("API_KEY is missing from environment variables.");
 }
 
-const ai = new GoogleGenAI({ apiKey: apiKey || 'dummy-key' });
+const ai = new GoogleGenAI({ apiKey: apiKey || '' });
 
 export const sendMessageToGeminiStream = async (
   history: Message[],

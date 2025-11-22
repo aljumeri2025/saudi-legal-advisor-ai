@@ -1,6 +1,8 @@
 import React from 'react';
 import { Entity } from '../types';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
+import { t } from '../i18n/translations';
 
 interface EntityCardProps {
   entity: Entity;
@@ -8,12 +10,13 @@ interface EntityCardProps {
 }
 
 export const EntityCard: React.FC<EntityCardProps> = ({ entity, onClick }) => {
+  const { language, dir } = useLanguage();
   const Icon = entity.icon;
 
   return (
     <button
       onClick={() => onClick(entity)}
-      className="group relative flex flex-col items-start p-5 bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-lg hover:border-saudi-green/30 transition-all duration-300 text-right w-full h-full hover:-translate-y-1"
+      className={`group relative flex flex-col items-start p-5 bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-lg hover:border-saudi-green/30 transition-all duration-300 w-full h-full hover:-translate-y-1 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}
     >
       <div className="flex justify-between w-full items-start mb-4">
         <div className={`p-3 rounded-xl ${entity.colorClass} bg-opacity-10`}>
@@ -33,9 +36,9 @@ export const EntityCard: React.FC<EntityCardProps> = ({ entity, onClick }) => {
       </p>
       
       <div className="w-full flex items-center justify-between text-saudi-green font-medium text-xs mt-auto pt-4 border-t border-gray-50 group-hover:border-saudi-green/10 transition-colors">
-        <span>ابدأ المحادثة</span>
+        <span>{t('startConversation', language)}</span>
         <div className="bg-saudi-green/10 p-1 rounded-full group-hover:bg-saudi-green group-hover:text-white transition-all">
-            <ChevronLeft size={14} />
+            {dir === 'rtl' ? <ChevronLeft size={14} /> : <ChevronRight size={14} />}
         </div>
       </div>
     </button>

@@ -1,5 +1,5 @@
 import { Message, SavedSession } from '../types';
-import { SAUDI_ENTITIES, PRIVATE_LAWYER_ENTITY } from '../constants';
+import { getEntities, getPrivateLawyerEntity } from '../constants';
 
 const STORAGE_KEY = 'saudi_advisor_history';
 
@@ -28,7 +28,8 @@ export const saveSession = (
   const history = getHistoryRaw();
   
   // Find entity name for title fallback
-  const allEntities = [...SAUDI_ENTITIES, PRIVATE_LAWYER_ENTITY];
+  // Use default language 'ar' to fetch entities for ID lookup
+  const allEntities = [...getEntities('ar'), getPrivateLawyerEntity('ar')];
   const entity = allEntities.find(e => e.id === entityId);
   
   // Generate title from first user message or entity name
